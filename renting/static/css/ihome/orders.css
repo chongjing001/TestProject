@@ -101,9 +101,9 @@ input.btn-on{
     color: #fff;
     background-color: #5cb85c;
     border-color: #4cae4c;
-    margin-right: 29px;
+    margin-right: 11px;
     border-radius: 4px;
-    padding: 6px 12px;
+    padding: 5px 10px;
     border: 1px solid transparent;
 }
 
@@ -112,8 +112,7 @@ input.btn-off{
     color: #fff;
     background-color: red;
     border-color: red;
-    margin-right: 5px;
     border-radius: 4px;
-    padding: 6px 12px;
+    padding: 5px 10px;
     border: 1px solid transparent;
 }

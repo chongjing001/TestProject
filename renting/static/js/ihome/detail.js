@@ -33,16 +33,23 @@ $(document).ready(function(){
         type:'GET',
         dataType:'json',
         success:function (data) {
-            console.log('flag:',data.flag)
-            if(data.flag){
-                $('.book-house').attr('href', '/order/booking/'+data.data.id+'/')
-                $(".book-house").show();
-            }
-            if(data.flag&&data.flag1){
+
+            if(data.flag1&&data.flag){
                 $('.book-house').html('需登录后方可预定，点我去登陆')
                 $('.book-house').attr('href','/user/login/')
                 $('.book-house').show()
             }
+
+            if(data.flag&&!data.flag1){
+                $('.book-house').attr('href', '/order/booking/'+data.data.id+'/')
+                $(".book-house").show();
+            }
+            if(!data.flag){
+                $('.book-house').html('欢迎主人，点我去订单页面')
+                $('.book-house').attr('href','/order/lorders/')
+                $('.book-house').show()
+            }
+
             console.log(data)
             $('.house-title').html(data.data.title);
             $('.landlord-pic img').attr('src','/static/media/'+data.data.user_avatar);
@@ -52,7 +59,7 @@ $(document).ready(function(){
             $('.icon-text .p1').html('房屋面积：'+data.data.acreage+'平米');
             $('.icon-text .p2').html('房屋户型：'+data.data.unit);
             $('.icon-text .h2').html('宜住'+data.data.capacity);
-            $('.icon-text .p3').html(+data.data.beds);
+            $('.icon-text .p3').html(data.data.beds);
             $('.s1').html(data.data.deposit);
             $('.s2').html(data.data.min_days);
             $('.s3').html(data.data.max_days);

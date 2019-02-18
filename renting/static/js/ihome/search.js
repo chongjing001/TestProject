@@ -130,7 +130,7 @@ $(document).ready(function(){
     })
 
     $.ajax({
-        url: '/home/index_info/',
+        url: '/home/s_info/',
         dataType: 'json',
         type:'GET',
         success:function (data) {

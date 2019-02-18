@@ -5,7 +5,7 @@ from app.models import House, Order
 blue_o = Blueprint('order', __name__)
 
 
-@blue_o.route('/lorders/', methods=['GET', 'POST'])
+@blue_o.route('/lorders/', methods=['GET'])
 def lorders():
     if request.method == 'GET':
         return render_template('lorders.html')

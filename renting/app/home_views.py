@@ -1,9 +1,10 @@
 import os
+
 import uuid
 
 from flask import Blueprint, render_template, request, jsonify, session
 
-from app.models import House, Facility, Area, HouseImage
+from app.models import House, Facility, Area, HouseImage, Order
 
 blue_h = Blueprint('home', __name__)
 
@@ -122,12 +123,13 @@ def my_detail():
         flag1 = False  # 用于判断是否登陆
         try:
             if house.user_id == int(session['user_id']):
-                flag = False
-                return jsonify({'code': 200, 'msg': '请求成功', 'data': house.to_full_dict(), 'flag': flag})
+                flag = False  # 是自己的房源
+                # return jsonify({'code': 200, 'msg': '请求成功', 'data': house.to_full_dict(), 'flag': flag})
         except:
-            flag1 = True
+            flag1 = True  # 没有登陆
 
-        return jsonify({'code': 200, 'msg': '请求成功', 'data': house.to_full_dict(), 'flag': flag,'flag1': flag1})
+        return jsonify({'code': 200, 'msg': '请求成功', 'data': house.to_full_dict(), 'flag': flag, 'flag1': flag1})
+
 
 # 房屋设施和地区接口
 @blue_h.route('/fac/', methods=['GET'])
@@ -150,3 +152,47 @@ def index_info():
             data.append(i.to_dict())
         count = len(data)
         return jsonify({'code': 200, 'msg': '请求成功', 'data': data, 'count': count})
+
+
+# 搜索接口
+@blue_h.route('/s_info/', methods=['GET'])
+def s_info():
+    a_id = request.args.get('a_id')
+    # a_name = request.args.get('a_name')
+    st_date = request.args.get('st_date')
+    end_date = request.args.get('end_date')
+
+    if not all([a_id,st_date,end_date]):
+        house = House.query.all()
+        data = []
+        for i in house:
+            data.append(i.to_dict())
+        count = len(data)
+        return jsonify({'code': 200, 'msg': '请求成功', 'data': data, 'count': count})
+
+    # 查询该区域的房源
+    houses = House.query.filter_by(area_id=a_id)
+    # 满足时间条件，查询入住时间和退房时间在首页选择时间内的房间，并排除掉这些房间
+    order_list = Order.query.filter(Order.status != 'REJECTED')
+    # 情况一：
+    order_list1 = Order.query.filter(Order.begin_date >= st_date, Order.end_date <= end_date)
+    # 情况二：
+    order_list2 = order_list.filter(Order.begin_date < st_date, Order.end_date > end_date)
+    # 情况三：
+    order_list3 = order_list.filter(Order.end_date >= st_date, Order.end_date <= end_date)
+    # 情况四：
+    order_list4 = order_list.filter(Order.begin_date >= st_date, Order.begin_date <= end_date)
+    # 获取订单中的房屋编号
+    house_ids = [order.house_id for order in order_list2]
+    for order in order_list3:
+        house_ids.append(order.house_id)
+    for order in order_list4:
+        if order.house_id not in house_ids:
+            house_ids.append(order.house_id)
+    # 查询排除入住时间和离店时间在预约订单内的房屋信息
+    hlist = houses.filter(House.id.notin_(house_ids))
+    # 排序规则,默认根据最新排列
+
+    hlist = [house.to_dict() for house in hlist]
+
+    return jsonify({'code': 200, 'msg': '请求成功', 'data': hlist})

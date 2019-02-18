@@ -44,18 +44,39 @@ function setEndDate() {
 }
 
 function goToSearchPage(th) {
-    var url = "/search.html?";
-    url += ("aid=" + $(th).attr("area-id"));
-    url += "&";
-    var areaName = $(th).attr("area-name");
-    if (undefined == areaName) areaName="";
-    url += ("aname=" + areaName);
-    url += "&";
-    url += ("sd=" + $(th).attr("start-date"));
-    url += "&";
-    url += ("ed=" + $(th).attr("end-date"));
-    console.log(url)
-    location.href = url;
+    // var url = "/search.html?";
+    // url += ("aid=" + $(th).attr("area-id"));
+    // url += "&";
+    // var areaName = $(th).attr("area-name");
+    // if (undefined == areaName) areaName="";
+    // url += ("aname=" + areaName);
+    // url += "&";
+    // url += ("sd=" + $(th).attr("start-date"));
+    // url += "&";
+    // url += ("ed=" + $(th).attr("end-date"));
+    // console.log(url)
+    // location.href = url;
+
+
+    var a_id = $(th).attr('area-id')
+    // var a_name = $(th).attr('area-name')
+    var st_date = $(th).attr('start-date')
+    var end_date = $(th).attr('end-date')
+    location.href = '/home/search/?a_id='+a_id+'&st_date='+st_date+'&end_date='+end_date+''
+
+    // $.ajax({
+    //     url:'/home/s_info/',
+    //     dataType:'json',
+    //     type:'GET',
+    //     data:{'a_id':a_id,'a_name':a_name,'st_date':st_date,'end_date':end_date},
+    //     success:function (data) {
+    //         console.log(data)
+    //         location.href='/home/search/'
+    //     },
+    //     error:function (data) {
+    //         alert('error')
+    //     }
+    // })
 }
 
 $(document).ready(function(){

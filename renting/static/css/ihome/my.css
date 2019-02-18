@@ -82,9 +82,16 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 5px;
+    margin-top: 20px;
 }
 .menu-text>ul>li {
     height: 25px;
     line-height: 25px;
     color: #666;
+}
+
+img {
+    border-radius: 50%;
+    border: 2px solid rgba(154, 129, 129, 0.82);
+
 }
