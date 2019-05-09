@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+        {% block css %}
+        {% endblock %}
+        {% block ico %}
+        {% endblock %}
+
+        {% block js1 %}
+        {% endblock %}
+</head>
+<body class="user-select">
+<section class="container-fluid">
+
+        {% block header %}
+        {% endblock %}
+        <div class="row">
+        {% block left %}
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+        </div>
+    </section>
+        {% block seeUserInfo %}
+
+        {% endblock %}
+
+        {% block seeUserLoginlog %}
+
+        {% endblock %}
+
+        {% block WeChat %}
+
+        {% endblock %}
+
+        {% block areDeveloping %}
+
+        {% endblock %}
+
+        {% block rightClickMenu %}
+
+        {% endblock %}
+
+        {% block js2 %}
+
+        {% endblock %}
+</body>
+</html>

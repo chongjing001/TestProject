@@ -1,0 +1,146 @@
+{% extends 'base_main.html'%}
+{% block title %}
+文章 - 客管理系统
+{% endblock %}
+
+
+<body class="user-select">
+{% block content %}
+
+
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-lg-10 col-md-offset-2 main" id="main">
+      <form action="/Article/checkAll" method="post" >
+        <h1 class="page-header">操作</h1>
+        <ol class="breadcrumb">
+          <li><a href="/article/add_article/">增加文章</a></li>
+        </ol>
+        <h1 class="page-header">管理 <span class="badge">{{count}}</span></h1>
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th><span class="glyphicon glyphicon-th-large"></span> <span class="visible-lg">选择</span></th>
+                <th><span class="glyphicon glyphicon-file"></span> <span class="visible-lg">标题</span></th>
+                <th><span class="glyphicon glyphicon-list"></span> <span class="visible-lg">栏目</span></th>
+                <th class="hidden-sm"><span class="glyphicon glyphicon-tag"></span> <span class="visible-lg">标签</span></th>
+                <!--<th class="hidden-sm"><span class="glyphicon glyphicon-comment"></span> <span class="visible-lg">评论</span></th>-->
+                <th><span class="glyphicon glyphicon-time"></span> <span class="visible-lg">日期</span></th>
+                <th><span class="glyphicon glyphicon-pencil"></span> <span class="visible-lg">操作</span></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for article in articles %}
+              {% csrf_token %}
+              <tr>
+                <td><input type="checkbox" class="input-control" name="checkbox[]" value="" /></td>
+                <td class="article-title">{{ article.a_title }}</td>
+                <td class="article-part">{{ article.a_part }}</td>
+                <td class="hidden-sm" style="margin-right: 2px; margin-left: 0; border-top-left-radius: 4px; border-bottom-left-radius: 4px;">{{ article.a_tag }}</td>
+                <!--<td class="hidden-sm">0</td>-->
+                <td>{{ article.a_date }}</td>
+                <td><a href="{% url 'article:update_article' %}?id={{article.id}}">修改</a> <a rel="{{article.id}}">删除</a></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <footer class="message_footer">
+          <nav>
+            <div class="btn-toolbar operation" role="toolbar">
+              <div class="btn-group" role="group"> <a class="btn btn-default" onClick="select()">全选</a> <a class="btn btn-default" onClick="reverse()">反选</a> <a class="btn btn-default" onClick="noselect()">不选</a> </div>
+              <div class="btn-group" role="group">
+                <button type="submit" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="删除全部选中" name="checkbox_delete">删除</button>
+              </div>
+            </div>
+            <ul class="pagination pagenav">
+              {% if articles.has_previous %}
+              <li ><a aria-label="Previous" href="{% url 'article:index' %}?page={{ articles.previous_page_number }}"> <span aria-hidden="true">&laquo;</span> </a> </li>
+              {% endif %}
+              {% for i in articles.paginator.page_range %}
+              <li class="active"><a href="{% url 'article:index' %}?page={{i}}" class="page_a">{{i}}</a></li>
+              {% endfor %}
+              {% if articles.has_next %}
+              <li><a href="{% url 'article:index' %}?page={{ articles.next_page_number }}" aria-label="Next"> <span aria-hidden="true">&raquo;</span> </a> </li>
+              {% endif %}
+            </ul>
+            <style>
+              .pagination pagenav .active .page_a{
+                  z-index: 2;
+                  color: #337ab7;
+                  cursor: default;
+                  background-color: #fff;
+                  border-color: #337ab7;
+              }
+
+            </style>
+          </nav>
+        </footer>
+      </form>
+    </div>
+
+{% endblock %}
+
+
+
+{% block js2 %}
+
+{{block.super}}
+<script>
+//是否确认删除
+$(function(){
+	$("#main table tbody tr td a").click(function(){
+		var name = $(this);
+		var id = name.attr("rel"); //对应id
+
+        console.log(id)
+		if (event.srcElement.outerText == "删除")
+		{
+			if(window.confirm("此操作不可逆，是否确认？"))
+			{
+			    var csrf = $('input[name="csrfmiddlewaretoken"]').val()
+				$.ajax({
+					type: "POST",
+					url: "/article/del_article/",
+                    headers:{'X-CSRFToken': csrf},
+                    dataType:'json',
+					data: {'id':id},
+					cache: false, //不缓存此页面
+					success: function (data) {
+                      console.log('aaa',data)
+                      location.href='/article/index/'
+                    },
+                    error:function(e){
+					  // location.href='/article/index/'
+                      console.log('error')
+                    }
+				});
+			};
+		};
+        // if (event.srcElement.outerText == "修改")
+        // {
+        //     // var title = $('tobody .article-title').text()
+        //     // var part = $('tobody .article-part').text()
+        //     // var tag = $('tobody .hidden-sm').text()
+        //     var csrf = $('input[name="csrfmiddlewaretoken"]').val()
+		// 		$.ajax({
+		// 			type: "POST",
+		// 			url: "/article/update_article/",
+        //             headers:{'X-CSRFToken': csrf},
+        //             dataType:'json',
+		// 			data: {'id':id},
+		// 			cache: false, //不缓存此页面
+		// 			success: function (data) {
+        //               console.log(data)
+        //               // location.href='/article/update_article/'
+        //             },
+        //             error:function(e){
+		// 			  // location.href='/article/index/'
+        //                 console.log('uuuu')
+        //             }
+		// 		});
+        // }
+	});
+});
+</script>
+
+{% endblock %}
